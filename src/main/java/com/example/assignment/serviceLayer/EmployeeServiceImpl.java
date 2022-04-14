@@ -17,4 +17,9 @@ public class EmployeeServiceImpl implements EmployeeService{
         e.setLastName("Soni");
         return e;
     }
+
+    @Override
+    public void addEmployee(Employee e) {
+        System.out.println(e);
+    }
 }
