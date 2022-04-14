@@ -1,5 +1,6 @@
 package com.example.assignment.controller;
 
+import com.example.assignment.entities.Employee;
 import com.example.assignment.serviceLayer.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ public class MainController {
     EmployeeService employeeService;
 
     @GetMapping
-    public String getData()
+    public Employee getData()
     {
         return employeeService.getEmployeeData();
     }
