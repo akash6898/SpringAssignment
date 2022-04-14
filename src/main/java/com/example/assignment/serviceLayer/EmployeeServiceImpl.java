@@ -23,6 +23,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public void addEmployee(Employee e) {
+        System.out.println(e);
         employeeDaoLayer.save(e);
     }
 }
