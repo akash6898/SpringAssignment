@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 public class MainController {
 
@@ -15,7 +17,7 @@ public class MainController {
     EmployeeService employeeService;
 
     @GetMapping
-    public Employee getData()
+    public List<Employee> getData()
     {
         return employeeService.getEmployeeData();
     }

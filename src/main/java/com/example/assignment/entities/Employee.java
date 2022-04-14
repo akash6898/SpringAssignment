@@ -3,13 +3,14 @@ package com.example.assignment.entities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Component
 @Entity
 public class Employee {
     @Id
+    @GeneratedValue(strategy= GenerationType.AUTO, generator="my_entity_seq_gen")
+    @SequenceGenerator(name="my_entity_seq_gen", sequenceName="MY_ENTITY_SEQ")
     int id;
     String firstName;
     String lastName;
