@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,6 +34,16 @@ public class EmployeeServiceImpl implements EmployeeService{
     public void addEmployee(Employee e) {
         System.out.println(e);
         employeeDaoLayer.save(e);
+    }
+
+    @Override
+    public void addBulkEmployee(List<Employee> employeeList) {
+        System.out.println(employeeList);
+        ExecutorService service = Executors.newFixedThreadPool(8);
+        employeeList.forEach(employee -> {
+
+            service.execute(() -> employeeDaoLayer.save(employee));
+        });
     }
 
     @Override

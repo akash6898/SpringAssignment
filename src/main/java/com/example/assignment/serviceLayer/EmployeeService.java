@@ -8,6 +8,7 @@ import java.util.List;
 public interface EmployeeService {
     public List<Employee> getAllEmployeeData();
     public void addEmployee(Employee employee);
+    public void addBulkEmployee(List<Employee> employeeList);
     public Employee searchByEmployeeId(int employeeId);
     public void editEmployee(Employee employee);
     public void deleteEmployee(int employeeId);

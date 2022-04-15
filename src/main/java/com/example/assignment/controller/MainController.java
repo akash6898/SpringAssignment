@@ -32,6 +32,13 @@ public class MainController {
        return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PostMapping("/bulkEmployee")
+    public ResponseEntity addBulkEmployee(@RequestBody List<Employee> employeeList)
+    {
+        employeeService.addBulkEmployee(employeeList);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @GetMapping("/employee/{employeeId}")
     public Employee getEmployeeById(@PathVariable("employeeId") int employeeId)
     {
