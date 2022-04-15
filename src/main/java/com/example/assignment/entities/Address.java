@@ -19,6 +19,7 @@ public class Address {
     String contactNo;
 
 
+
     public Address()
     {
 
@@ -90,5 +91,16 @@ public class Address {
         this.contactNo = contactNo;
     }
 
-
+    @Override
+    public String toString() {
+        return "Address{" +
+                "addressId=" + addressId +
+                ", addressLine1='" + addressLine1 + '\'' +
+                ", cityName='" + cityName + '\'' +
+                ", state='" + state + '\'' +
+                ", country='" + country + '\'' +
+                ", pinCode='" + pinCode + '\'' +
+                ", contactNo='" + contactNo + '\'' +
+                '}';
+    }
 }

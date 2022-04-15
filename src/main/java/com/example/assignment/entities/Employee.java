@@ -53,16 +53,27 @@ public class Employee {
     }
 
     public void setLastName(String lastName) {
+
         this.lastName = lastName;
     }
 
     public List<Address> getAddresses() {
+
         return addresses;
     }
 
     public void setAddresses(List<Address> addresses) {
+
         this.addresses = addresses;
     }
+
+    public void addAddresses(Address address) {
+
+        addresses.add(address);
+    }
+
+
+
 
     @Override
     public String toString() {
