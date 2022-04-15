@@ -2,6 +2,7 @@ package com.example.assignment.controller;
 
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
+import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.serviceLayer.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -104,8 +105,8 @@ public class MainController {
     }
 
     @GetMapping("/searchByCountry/{country}")
-    public List<Employee> searchByCountry(@PathVariable("country") String country)
-    {
+    public List<Employee> searchByCountry(@PathVariable("country") String country)  {
+
 
         return employeeService.searchByCountry(country);
     }
