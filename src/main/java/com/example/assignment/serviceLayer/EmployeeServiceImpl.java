@@ -5,6 +5,7 @@ import com.example.assignment.daoLayer.EmployeeDaoLayer;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,8 +48,10 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public Employee searchByEmployeeId(int employeeId) {
+    @Cacheable(cacheNames = "searchByEmployeeId", key = "#employeeId" ,sync = true)
+    public Employee searchByEmployeeId(int employeeId) throws InterruptedException {
         Optional<Employee> employee =  employeeDaoLayer.findById(employeeId);
+        Thread.sleep(5000);
         if(employee.isPresent())
         {
             return employee.get();
@@ -58,6 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public void editEmployee(Employee employee) {
+
         employeeDaoLayer.save(employee);
     }
 

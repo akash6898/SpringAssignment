@@ -4,6 +4,7 @@ import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.serviceLayer.EmployeeService;
+import com.example.assignment.serviceLayer.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import java.util.List;
 public class MainController {
 
     @Autowired
-    EmployeeService employeeService;
+    EmployeeServiceImpl employeeService;
 
     @GetMapping("/employee")
     public List<Employee> getAllEmployee()
@@ -40,8 +41,7 @@ public class MainController {
     }
 
     @GetMapping("/employee/{employeeId}")
-    public Employee getEmployeeById(@PathVariable("employeeId") int employeeId)
-    {
+    public Employee getEmployeeById(@PathVariable("employeeId") int employeeId) throws InterruptedException {
 
         return employeeService.searchByEmployeeId(employeeId);
     }
