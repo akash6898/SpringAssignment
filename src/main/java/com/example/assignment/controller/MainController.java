@@ -74,8 +74,7 @@ public class MainController {
     }
 
     @PutMapping("/address/{employeeId}")
-    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address)
-    {
+    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address) throws InterruptedException {
         employeeService.editAddress(employeeId , address);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -88,8 +87,7 @@ public class MainController {
     }
 
     @DeleteMapping("/deleteAllAddress/{employeeId}")
-    public ResponseEntity deleteAllAddress(@PathVariable("employeeId") int employeeId)
-    {
+    public ResponseEntity deleteAllAddress(@PathVariable("employeeId") int employeeId) throws InterruptedException {
         employeeService.deleteAllAddress(employeeId);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -12,9 +12,9 @@ public interface EmployeeService {
     public Employee editEmployee(Employee employee);
     public void deleteEmployee(int employeeId);
     public Employee addAddress(int employeeId, Address address) throws InterruptedException;
-    public Employee editAddress(int employeeId,Address address);
+    public Employee editAddress(int employeeId,Address address) throws InterruptedException;
     public Employee deleteAddress(int addressId);
-    public Employee deleteAllAddress(int employeeId);
+    public Employee deleteAllAddress(int employeeId) throws InterruptedException;
     public List<Employee> searchByPinCode(int pinCode);
     public List<Employee> searchByCity(String city);
     public List<Employee> searchByState(String city);

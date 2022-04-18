@@ -21,7 +21,8 @@ import java.util.stream.Stream;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    
+    @Autowired
+    EmployeeService self;
 
     @Autowired
     EmployeeDaoLayer employeeDaoLayer;
@@ -73,15 +74,15 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
     public Employee addAddress(int employeeId, Address address) throws InterruptedException {
-        Employee employee = searchByEmployeeId(employeeId);
+        Employee employee = self.searchByEmployeeId(employeeId);
         employee.addAddresses(address);
         return employeeDaoLayer.save(employee);
     }
 
     @Override
     @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
-    public Employee editAddress(int employeeId, Address address) {
-        Employee employee = employeeDaoLayer.getById(employeeId);
+    public Employee editAddress(int employeeId, Address address) throws InterruptedException {
+        Employee employee = self.searchByEmployeeId(employeeId);
         List<Address> addressList = employee.getAddresses();
         Stream<Address> addressStream = addressList.stream().map(address1 -> {
 
@@ -121,8 +122,8 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
-    public Employee deleteAllAddress(int employeeId) {
-        Employee employee = employeeDaoLayer.getById(employeeId);
+    public Employee deleteAllAddress(int employeeId) throws InterruptedException {
+        Employee employee = self.searchByEmployeeId(employeeId);
         employee.setAddresses(null);
         return employeeDaoLayer.save(employee);
     }
