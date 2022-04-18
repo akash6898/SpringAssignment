@@ -11,12 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
 public class MainController {
 
     @Autowired
-    EmployeeServiceImpl employeeService;
+    EmployeeService employeeService;
 
     @GetMapping("/employee")
     public List<Employee> getAllEmployee()
@@ -36,7 +38,11 @@ public class MainController {
     @PostMapping("/bulkEmployee")
     public ResponseEntity addBulkEmployee(@RequestBody List<Employee> employeeList)
     {
-        employeeService.addBulkEmployee(employeeList);
+        ExecutorService service = Executors.newFixedThreadPool(8);
+        employeeList.forEach(employee -> {
+
+            service.execute(() ->employeeService.addEmployee(employee));
+        });
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -62,8 +68,7 @@ public class MainController {
     }
 
     @PostMapping("/address/{employeeId}")
-    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address)
-    {
+    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address) throws InterruptedException {
         employeeService.addAddress(employeeId , address);
         return new ResponseEntity(HttpStatus.OK);
     }

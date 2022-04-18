@@ -7,15 +7,14 @@ import java.util.List;
 
 public interface EmployeeService {
     public List<Employee> getAllEmployeeData();
-    public void addEmployee(Employee employee);
-    public void addBulkEmployee(List<Employee> employeeList);
+    public Employee addEmployee(Employee employee);
     public Employee searchByEmployeeId(int employeeId) throws InterruptedException;
-    public void editEmployee(Employee employee);
+    public Employee editEmployee(Employee employee);
     public void deleteEmployee(int employeeId);
-    public void addAddress(int employeeId, Address address);
-    public void editAddress(int employeeId,Address address);
-    public void deleteAddress(int addressId);
-    public void deleteAllAddress(int employeeId);
+    public Employee addAddress(int employeeId, Address address) throws InterruptedException;
+    public Employee editAddress(int employeeId,Address address);
+    public Employee deleteAddress(int addressId);
+    public Employee deleteAllAddress(int employeeId);
     public List<Employee> searchByPinCode(int pinCode);
     public List<Employee> searchByCity(String city);
     public List<Employee> searchByState(String city);

@@ -13,4 +13,5 @@ public interface EmployeeDaoLayer extends JpaRepository<Employee, Integer> {
     List<Employee> findByaddresses_CityName(String city);
     List<Employee> findByaddresses_State(String state);
     List<Employee> findByaddresses_Country(String country);
+    Employee findByaddresses_addressId(int addressId);
 }

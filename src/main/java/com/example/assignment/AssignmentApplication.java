@@ -27,7 +27,7 @@ public class AssignmentApplication implements CachingConfigurer {
 		CacheConfiguration cacheConfiguration = new CacheConfiguration();
 		cacheConfiguration.setName("searchByEmployeeId");
 		cacheConfiguration.setMaxEntriesLocalHeap(1000);
-		cacheConfiguration.setTimeToLiveSeconds(30);
+		cacheConfiguration.setTimeToLiveSeconds(120);
 		net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
 		config.addCache(cacheConfiguration);
 
@@ -40,6 +40,6 @@ public class AssignmentApplication implements CachingConfigurer {
 	public org.springframework.cache.CacheManager cacheManager() {
 		return (org.springframework.cache.CacheManager) new EhCacheCacheManager(ehCacheManager());
 	}
-	
+
 
 }

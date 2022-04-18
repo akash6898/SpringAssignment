@@ -5,9 +5,12 @@ import com.example.assignment.daoLayer.EmployeeDaoLayer;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLOutput;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -18,11 +21,10 @@ import java.util.stream.Stream;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    @Autowired
-    EmployeeDaoLayer employeeDaoLayer;
+    
 
     @Autowired
-    AddressDaoLayer addressDaoLayer;
+    EmployeeDaoLayer employeeDaoLayer;
 
 
     @Override
@@ -32,20 +34,13 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    public void addEmployee(Employee e) {
-        System.out.println(e);
-        employeeDaoLayer.save(e);
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#result.employeeId")
+    public Employee addEmployee(Employee employee) {
+        System.out.println(employee);
+        return  employeeDaoLayer.save(employee);
     }
 
-    @Override
-    public void addBulkEmployee(List<Employee> employeeList) {
-        System.out.println(employeeList);
-        ExecutorService service = Executors.newFixedThreadPool(8);
-        employeeList.forEach(employee -> {
 
-            service.execute(() -> employeeDaoLayer.save(employee));
-        });
-    }
 
     @Override
     @Cacheable(cacheNames = "searchByEmployeeId", key = "#employeeId" ,sync = true)
@@ -59,26 +54,33 @@ public class EmployeeServiceImpl implements EmployeeService{
         return  null;
     }
 
-    @Override
-    public void editEmployee(Employee employee) {
 
-        employeeDaoLayer.save(employee);
+    @Override
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#employee.employeeId")
+    public Employee editEmployee(Employee employee) {
+       return employeeDaoLayer.save(employee);
     }
 
+
+
     @Override
+    @CacheEvict(cacheNames = "searchByEmployeeId", key = "#employee.employeeId")
     public void deleteEmployee(int employeeId) {
+
         employeeDaoLayer.deleteById(employeeId);
     }
 
     @Override
-    public void addAddress(int employeeId, Address address) {
-        Employee employee = employeeDaoLayer.getById(employeeId);
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    public Employee addAddress(int employeeId, Address address) throws InterruptedException {
+        Employee employee = searchByEmployeeId(employeeId);
         employee.addAddresses(address);
-        employeeDaoLayer.save(employee);
+        return employeeDaoLayer.save(employee);
     }
 
     @Override
-    public void editAddress(int employeeId, Address address) {
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    public Employee editAddress(int employeeId, Address address) {
         Employee employee = employeeDaoLayer.getById(employeeId);
         List<Address> addressList = employee.getAddresses();
         Stream<Address> addressStream = addressList.stream().map(address1 -> {
@@ -93,19 +95,36 @@ public class EmployeeServiceImpl implements EmployeeService{
 
       employee.setAddresses(addressStream.collect(Collectors.toList()));
         System.out.println(employee.getAddresses());
-        employeeDaoLayer.save(employee);
+       return employeeDaoLayer.save(employee);
     }
 
     @Override
-    public void deleteAddress(int addressId) {
-        addressDaoLayer.deleteById(addressId);
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#result.employeeId")
+    public Employee deleteAddress(int addressId) {
+        Employee employee = employeeDaoLayer.findByaddresses_addressId(addressId);
+        List<Address> addressList = employee.getAddresses();
+        Stream<Address> addressStream = addressList.stream().filter(address1 -> {
+
+            if(addressId == address1.getAddressId())
+            {
+
+                return false;
+            }
+            return true;
+        });
+
+        employee.setAddresses(addressStream.collect(Collectors.toList()));
+        System.out.println(employee.getAddresses());
+        return employeeDaoLayer.save(employee);
+
     }
 
     @Override
-    public void deleteAllAddress(int employeeId) {
+    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    public Employee deleteAllAddress(int employeeId) {
         Employee employee = employeeDaoLayer.getById(employeeId);
         employee.setAddresses(null);
-        employeeDaoLayer.save(employee);
+        return employeeDaoLayer.save(employee);
     }
 
     @Override
