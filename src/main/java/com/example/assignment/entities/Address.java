@@ -1,10 +1,15 @@
 package com.example.assignment.entities;
 
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Component
+@Cacheable(cacheNames = "employee")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
 public class Address {
     @Id
@@ -102,5 +107,18 @@ public class Address {
                 ", pinCode='" + pinCode + '\'' +
                 ", contactNo='" + contactNo + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return addressId == address.addressId && addressLine1.equals(address.addressLine1) && cityName.equals(address.cityName) && state.equals(address.state) && country.equals(address.country) && pinCode.equals(address.pinCode) && contactNo.equals(address.contactNo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(addressId, addressLine1, cityName, state, country, pinCode, contactNo);
     }
 }

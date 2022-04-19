@@ -1,13 +1,21 @@
 package com.example.assignment.daoLayer;
 
 import com.example.assignment.entities.Employee;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface EmployeeDaoLayer extends JpaRepository<Employee, Integer> {
+
+
+//    @Cacheable("com.example.assignment.entities.Employee")
+    Optional<Employee> findById(int employeeId);
 
     List<Employee> findByaddresses_PinCode(String pinCode);
     List<Employee> findByaddresses_CityName(String city);

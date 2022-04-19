@@ -1,13 +1,18 @@
 package com.example.assignment.entities;
 
 import com.example.assignment.daoLayer.AddressDaoLayer;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Component
+@Cacheable(cacheNames = "employee")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
 public class Employee {
     @Id
@@ -16,8 +21,11 @@ public class Employee {
     int employeeId;
     String firstName;
     String lastName;
+
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id")
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     List<Address> addresses;
 
     public  Employee(){
@@ -73,7 +81,18 @@ public class Employee {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Employee)) return false;
+        Employee employee = (Employee) o;
+        return getEmployeeId() == employee.getEmployeeId() && Objects.equals(getFirstName(), employee.getFirstName()) && Objects.equals(getLastName(), employee.getLastName()) && Objects.equals(getAddresses(), employee.getAddresses());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmployeeId(), getFirstName(), getLastName());
+    }
 
     @Override
     public String toString() {

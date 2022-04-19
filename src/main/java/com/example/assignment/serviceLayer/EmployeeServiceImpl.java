@@ -5,12 +5,15 @@ import com.example.assignment.daoLayer.EmployeeDaoLayer;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -20,12 +23,15 @@ import java.util.stream.Stream;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
-
     @Autowired
-    EmployeeService self;
+    EmployeeServiceImpl self;
 
     @Autowired
     EmployeeDaoLayer employeeDaoLayer;
+
+
+
+
 
 
     @Override
@@ -35,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     }
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#result.employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#result.employeeId")
     public Employee addEmployee(Employee employee) {
         System.out.println(employee);
         return  employeeDaoLayer.save(employee);
@@ -44,10 +50,11 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    @Cacheable(cacheNames = "searchByEmployeeId", key = "#employeeId" ,sync = true)
+    @Cacheable(cacheNames = "firstLevel", key = "#employeeId" ,sync = true ,condition = "#employeeId>10")
     public Employee searchByEmployeeId(int employeeId) throws InterruptedException {
-        Optional<Employee> employee =  employeeDaoLayer.findById(employeeId);
-        Thread.sleep(5000);
+        Optional<Employee> employee = Optional.of(employeeDaoLayer.findById(employeeId).get());
+//       Cache c =  cacheManager.getCache("employee");
+//        Thread.sleep(5000);
         if(employee.isPresent())
         {
             return employee.get();
@@ -57,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#employee.employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#employee.employeeId")
     public Employee editEmployee(Employee employee) {
        return employeeDaoLayer.save(employee);
     }
@@ -65,22 +72,27 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    @CacheEvict(cacheNames = "searchByEmployeeId", key = "#employee.employeeId")
+    @CacheEvict(cacheNames = "firstLevel", key = "#employee.employeeId")
     public void deleteEmployee(int employeeId) {
 
         employeeDaoLayer.deleteById(employeeId);
+        return;
     }
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#employeeId")
     public Employee addAddress(int employeeId, Address address) throws InterruptedException {
         Employee employee = self.searchByEmployeeId(employeeId);
+//        List<Address> addressesList = employee.getAddresses();
+//        addressesList.add(address);
+//        employee.setAddresses(addressesList);
         employee.addAddresses(address);
+        System.out.println("in service " + employee);
         return employeeDaoLayer.save(employee);
     }
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#employeeId")
     public Employee editAddress(int employeeId, Address address) throws InterruptedException {
         Employee employee = self.searchByEmployeeId(employeeId);
         List<Address> addressList = employee.getAddresses();
@@ -95,12 +107,13 @@ public class EmployeeServiceImpl implements EmployeeService{
         });
 
       employee.setAddresses(addressStream.collect(Collectors.toList()));
-        System.out.println(employee.getAddresses());
+        System.out.println("in service edit" + employee);
        return employeeDaoLayer.save(employee);
+
     }
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#result.employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#result.employeeId")
     public Employee deleteAddress(int addressId) {
         Employee employee = employeeDaoLayer.findByaddresses_addressId(addressId);
         List<Address> addressList = employee.getAddresses();
@@ -115,16 +128,16 @@ public class EmployeeServiceImpl implements EmployeeService{
         });
 
         employee.setAddresses(addressStream.collect(Collectors.toList()));
-        System.out.println(employee.getAddresses());
+        System.out.println("in service" +  employee);
         return employeeDaoLayer.save(employee);
 
     }
 
     @Override
-    @CachePut(cacheNames = "searchByEmployeeId", key = "#employeeId")
+    @CachePut(cacheNames = "firstLevel", key = "#employeeId")
     public Employee deleteAllAddress(int employeeId) throws InterruptedException {
         Employee employee = self.searchByEmployeeId(employeeId);
-        employee.setAddresses(null);
+        employee.setAddresses(new ArrayList<>());
         return employeeDaoLayer.save(employee);
     }
 
