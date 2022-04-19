@@ -49,6 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#result.employeeId")
     public Employee addEmployee(EmployeeDto employeeDto) {
+        System.out.println("dto" + employeeDto);
         System.out.println(dozerBeanMapper.map(employeeDto,Employee.class));
         return  employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class));
     }

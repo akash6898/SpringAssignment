@@ -1,6 +1,7 @@
 package com.example.assignment.entities;
 
 import com.example.assignment.daoLayer.AddressDaoLayer;
+import org.dozer.Mapping;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +24,8 @@ public class Employee {
     String lastName;
 
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @Mapping("addressesDtoList")
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "employee_id")
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
     List<Address> addresses;

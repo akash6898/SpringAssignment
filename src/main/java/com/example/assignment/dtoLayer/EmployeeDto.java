@@ -9,6 +9,7 @@ public class EmployeeDto {
     int employeeId;
     String firstName;
     String lastName;
+    @Mapping("addresses")
     List<AddressDto> addressesDtoList;
 
     public EmployeeDto()
