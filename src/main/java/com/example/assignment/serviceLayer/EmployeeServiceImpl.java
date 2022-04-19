@@ -73,10 +73,10 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @CacheEvict(cacheNames = "firstLevel", key = "#employee.employeeId")
-    public void deleteEmployee(int employeeId) {
+    public boolean deleteEmployee(int employeeId) {
 
         employeeDaoLayer.deleteById(employeeId);
-        return;
+        return true;
     }
 
     @Override

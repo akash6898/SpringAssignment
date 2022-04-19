@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -108,12 +108,7 @@ public class AssignmentApplicationTests {
         assertEquals(akash, employeeService.editEmployee(akash));
         verify(employeeDaoLayer).save(akash);
     }
-
-    @Test
-    public void deleteEmployee()
-    {
-
-    }
+    
 
     @Test
     public void addAddressTest() throws InterruptedException, CloneNotSupportedException {

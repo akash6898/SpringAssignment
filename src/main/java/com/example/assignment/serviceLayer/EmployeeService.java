@@ -10,7 +10,7 @@ public interface EmployeeService {
     public Employee addEmployee(Employee employee);
     public Employee searchByEmployeeId(int employeeId) throws InterruptedException;
     public Employee editEmployee(Employee employee);
-    public void deleteEmployee(int employeeId);
+    public boolean deleteEmployee(int employeeId);
     public Employee addAddress(int employeeId, Address address) throws InterruptedException;
     public Employee editAddress(int employeeId,Address address) throws InterruptedException;
     public Employee deleteAddress(int addressId);
