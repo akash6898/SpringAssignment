@@ -2,8 +2,11 @@ package com.example.assignment.serviceLayer;
 
 import com.example.assignment.daoLayer.AddressDaoLayer;
 import com.example.assignment.daoLayer.EmployeeDaoLayer;
+import com.example.assignment.dtoLayer.AddressDto;
+import com.example.assignment.dtoLayer.EmployeeDto;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
+import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,6 +30,9 @@ public class EmployeeServiceImpl implements EmployeeService{
     EmployeeServiceImpl self;
 
     @Autowired
+    Mapper dozerBeanMapper;
+
+    @Autowired
     EmployeeDaoLayer employeeDaoLayer;
 
 
@@ -42,9 +48,9 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#result.employeeId")
-    public Employee addEmployee(Employee employee) {
-        System.out.println(employee);
-        return  employeeDaoLayer.save(employee);
+    public Employee addEmployee(EmployeeDto employeeDto) {
+        System.out.println(dozerBeanMapper.map(employeeDto,Employee.class));
+        return  employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class));
     }
 
 
@@ -64,15 +70,17 @@ public class EmployeeServiceImpl implements EmployeeService{
 
 
     @Override
-    @CachePut(cacheNames = "firstLevel", key = "#employee.employeeId")
-    public Employee editEmployee(Employee employee) {
-       return employeeDaoLayer.save(employee);
+    @CachePut(cacheNames = "firstLevel", key = "#employeeDto.employeeId")
+    public Employee editEmployee(EmployeeDto employeeDto) {
+        System.out.println("in service" + dozerBeanMapper.map(employeeDto,Employee.class));
+        System.out.println(employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class)));
+       return employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class));
     }
 
 
 
     @Override
-    @CacheEvict(cacheNames = "firstLevel", key = "#employee.employeeId")
+    @CacheEvict(cacheNames = "firstLevel", key = "#employeeId")
     public boolean deleteEmployee(int employeeId) {
 
         employeeDaoLayer.deleteById(employeeId);
@@ -81,19 +89,20 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeId")
-    public Employee addAddress(int employeeId, Address address) throws InterruptedException {
+    public Employee addAddress(int employeeId, AddressDto addressDto) throws InterruptedException {
         Employee employee = self.searchByEmployeeId(employeeId);
 //        List<Address> addressesList = employee.getAddresses();
 //        addressesList.add(address);
 //        employee.setAddresses(addressesList);
-        employee.addAddresses(address);
+        employee.addAddresses(dozerBeanMapper.map(addressDto,Address.class));
         System.out.println("in service " + employee);
         return employeeDaoLayer.save(employee);
     }
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeId")
-    public Employee editAddress(int employeeId, Address address) throws InterruptedException {
+    public Employee editAddress(int employeeId, AddressDto addressDto) throws InterruptedException {
+        Address address = dozerBeanMapper.map(addressDto,Address.class);
         Employee employee = self.searchByEmployeeId(employeeId);
         List<Address> addressList = employee.getAddresses();
         Stream<Address> addressStream = addressList.stream().map(address1 -> {

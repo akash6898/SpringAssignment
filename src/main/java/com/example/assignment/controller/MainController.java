@@ -1,5 +1,7 @@
 package com.example.assignment.controller;
 
+import com.example.assignment.dtoLayer.AddressDto;
+import com.example.assignment.dtoLayer.EmployeeDto;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import com.example.assignment.execption.CustomExecption;
@@ -29,19 +31,19 @@ public class MainController {
 
 
     @PostMapping("/employee")
-    public ResponseEntity addEmployee(@RequestBody Employee employee)
+    public ResponseEntity addEmployee(@RequestBody EmployeeDto employeeDto)
     {
-        employeeService.addEmployee(employee);
+        employeeService.addEmployee(employeeDto);
        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/bulkEmployee")
-    public ResponseEntity addBulkEmployee(@RequestBody List<Employee> employeeList)
+    public ResponseEntity addBulkEmployee(@RequestBody List<EmployeeDto> employeeDtoList)
     {
         ExecutorService service = Executors.newFixedThreadPool(8);
-        employeeList.forEach(employee -> {
+        employeeDtoList.forEach(employeeDto -> {
 
-            service.execute(() ->employeeService.addEmployee(employee));
+            service.execute(() ->employeeService.addEmployee(employeeDto));
         });
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -53,9 +55,9 @@ public class MainController {
     }
 
     @PutMapping("/employee")
-    public ResponseEntity editEmployee(@RequestBody Employee employee)
+    public ResponseEntity editEmployee(@RequestBody EmployeeDto employeeDto)
     {
-        employeeService.editEmployee(employee);
+        employeeService.editEmployee(employeeDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -68,14 +70,14 @@ public class MainController {
     }
 
     @PostMapping("/address/{employeeId}")
-    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address) throws InterruptedException {
-        employeeService.addAddress(employeeId , address);
+    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException {
+        employeeService.addAddress(employeeId , addressDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/address/{employeeId}")
-    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody Address address) throws InterruptedException {
-        employeeService.editAddress(employeeId , address);
+    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException {
+        employeeService.editAddress(employeeId , addressDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 

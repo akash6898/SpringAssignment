@@ -1,15 +1,8 @@
 package com.example.assignment;
 
-
-import com.example.assignment.entities.Address;
-import com.example.assignment.entities.Employee;
 import net.sf.ehcache.config.CacheConfiguration;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cache.ehcache.internal.EhcacheRegionFactory;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.dozer.DozerBeanMapper;
+import org.dozer.Mapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.CachingConfigurer;
@@ -18,9 +11,6 @@ import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
-
-import javax.cache.CacheManager;
-
 
 
 @SpringBootApplication
@@ -34,36 +24,7 @@ public class AssignmentApplication implements CachingConfigurer {
 	}
 
 
-//	private static SessionFactory sessionFactory;
-//
-//	private  SessionFactory buildSessionFactory() {
-//		try {
-//			// Create the SessionFactory from hibernate.cfg.xml
-//			Configuration configuration = new Configuration();
-//			configuration.addAnnotatedClass(Employee.class);
-//			configuration.addAnnotatedClass(Address.class);
-//			configuration.configure();
-//			System.out.println("Hibernate Configuration loaded");
-//
-//			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder().applySettings(configuration.getProperties()).build();
-//			System.out.println("Hibernate serviceRegistry created");
-//
-//			SessionFactory sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-//
-//			return sessionFactory;
-//		}
-//		catch (Throwable ex) {
-//			System.err.println("Initial SessionFactory creation failed." + ex);
-//			ex.printStackTrace();
-//			throw new ExceptionInInitializerError(ex);
-//		}
-//	}
-//
-//	@Autowired
-//	public  SessionFactory getSessionFactory() {
-//		if(sessionFactory == null) sessionFactory = buildSessionFactory();
-//		return sessionFactory;
-//	}
+
 
 	@Bean
 	public net.sf.ehcache.CacheManager ehCacheManager() {
@@ -107,6 +68,16 @@ public class AssignmentApplication implements CachingConfigurer {
 	public org.springframework.cache.CacheManager getcacheManager() {
 		return (org.springframework.cache.CacheManager) new NoOpCacheManager();
 	}
+
+	@Bean
+	public Mapper mapper()
+	{
+		return  new DozerBeanMapper();
+	}
+
+
+
+
 
 
 
