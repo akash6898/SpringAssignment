@@ -1,6 +1,8 @@
 package com.example.assignment.entities;
 
-import com.example.assignment.daoLayer.AddressDaoLayer;
+//import com.example.assignment.daoLayer.AddressDaoLayer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import org.dozer.Mapping;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,7 @@ import java.util.Objects;
 
 @Component
 @Cacheable(cacheNames = "employee")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 public class Employee {
     @Id
@@ -25,16 +27,17 @@ public class Employee {
 
 
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee_id")
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+    @JsonManagedReference(value = "address")
     List<Address> addresses;
 
     public  Employee(){
     Employee employee;
     }
 
-    public Employee(int employeeId, String firstName, String lastName, List<Address> addresses) {
+    public Employee(int employeeId, String firstName, String lastName,List<Address> addresses) {
         this.employeeId = employeeId;
         this.firstName = firstName;
         this.lastName = lastName;

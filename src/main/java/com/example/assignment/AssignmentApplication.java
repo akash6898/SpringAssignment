@@ -32,7 +32,7 @@ public class AssignmentApplication implements CachingConfigurer {
 		cacheConfiguration.setName("firstLevel");
 
 		cacheConfiguration.setMaxEntriesLocalHeap(1000);
-		cacheConfiguration.setTimeToLiveSeconds(15);
+		cacheConfiguration.setTimeToLiveSeconds(5*60);
 
 
 
@@ -43,31 +43,33 @@ public class AssignmentApplication implements CachingConfigurer {
 		cacheConfiguration2.setMaxEntriesLocalHeap(1000);
 		cacheConfiguration2.eternal(true);
 		cacheConfiguration2.setTimeToLiveSeconds(1000);
-//		CacheConfiguration cacheConfiguration3 = new CacheConfiguration();
-//		cacheConfiguration3.setName("address");
-//		cacheConfiguration3.setMaxEntriesLocalHeap(1000);
-//		cacheConfiguration3.setTimeToLiveSeconds(75);
+		cacheConfiguration2.internalSetTimeToLive(1000);
+
+
+		CacheConfiguration cacheConfiguration3 = new CacheConfiguration();
+		cacheConfiguration3.setName("address");
+		cacheConfiguration3.diskPersistent(true);
+		cacheConfiguration3.diskSpoolBufferSizeMB(1000);
+		cacheConfiguration3.setMaxEntriesLocalHeap(1000);
+		cacheConfiguration3.eternal(true);
+		cacheConfiguration3.setTimeToLiveSeconds(1000);
+		cacheConfiguration3.internalSetTimeToLive(1000);
+
 
 		net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
 		config.addCache(cacheConfiguration);
 		config.addCache(cacheConfiguration2);
-
+		config.addCache(cacheConfiguration3);
 //		config.addCache(cacheConfiguration3);
 
 		return net.sf.ehcache.CacheManager.create(config);
 	}
 
 	@Bean
-	@Profile("!test")
 	public org.springframework.cache.CacheManager cacheManager() {
 		return (org.springframework.cache.CacheManager) new EhCacheCacheManager(ehCacheManager());
 	}
 
-	@Bean
-	@Profile("test")
-	public org.springframework.cache.CacheManager getcacheManager() {
-		return (org.springframework.cache.CacheManager) new NoOpCacheManager();
-	}
 
 	@Bean
 	public Mapper mapper()
@@ -78,17 +80,6 @@ public class AssignmentApplication implements CachingConfigurer {
 	}
 
 
-
-
-
-
-
-
-//	@Bean
-//	public  org.hibernate.cache.ehcache.internal.EhcacheRegionFactory  regionFactory()
-//	{
-//		return new EhcacheRegionFactory();
-//	}
 
 
 }

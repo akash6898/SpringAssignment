@@ -6,6 +6,8 @@ import com.example.assignment.dtoLayer.AddressDto;
 import com.example.assignment.dtoLayer.EmployeeDto;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
+import com.example.assignment.execption.CustomExecption;
+import com.example.assignment.execption.ErrorMessage;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -67,21 +69,25 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @Cacheable(cacheNames = "firstLevel", key = "#employeeId" ,sync = true ,condition = "#employeeId>10")
-    public Employee searchByEmployeeId(int employeeId) throws InterruptedException {
+    public Employee searchByEmployeeId(int employeeId) throws CustomExecption {
         Optional<Employee> employee = Optional.of(employeeDaoLayer.findById(employeeId).get());
-//       Cache c =  cacheManager.getCache("employee");
-//        Thread.sleep(5000);
+
         if(employee.isPresent())
         {
             return employee.get();
         }
-        return  null;
+        throw new CustomExecption("no employee found");
     }
 
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeDto.employeeId")
-    public Employee editEmployee(EmployeeDto employeeDto) {
+    public Employee editEmployee(EmployeeDto employeeDto) throws CustomExecption {
+        Optional<Employee> employee = employeeDaoLayer.findById(employeeDto.getEmployeeId());
+        if(employee.isEmpty())
+        {
+            throw new CustomExecption("no employee found");
+        }
         System.out.println("in service" + dozerBeanMapper.map(employeeDto,Employee.class));
         System.out.println(employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class)));
        return employeeDaoLayer.save(dozerBeanMapper.map(employeeDto,Employee.class));
@@ -99,19 +105,19 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeId")
-    public Employee addAddress(int employeeId, AddressDto addressDto) throws InterruptedException {
+    public Employee addAddress(int employeeId, AddressDto addressDto) throws InterruptedException, CustomExecption {
         Employee employee = self.searchByEmployeeId(employeeId);
-//        List<Address> addressesList = employee.getAddresses();
-//        addressesList.add(address);
-//        employee.setAddresses(addressesList);
-        employee.addAddresses(dozerBeanMapper.map(addressDto,Address.class));
+        List<Address> addressesList = employee.getAddresses();
+        addressesList.add(dozerBeanMapper.map(addressDto,Address.class));
+        employee.setAddresses(addressesList);
+
         System.out.println("in service " + employee);
         return employeeDaoLayer.save(employee);
     }
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeId")
-    public Employee editAddress(int employeeId, AddressDto addressDto) throws InterruptedException {
+    public Employee editAddress(int employeeId, AddressDto addressDto) throws InterruptedException, CustomExecption {
         Address address = dozerBeanMapper.map(addressDto,Address.class);
         Employee employee = self.searchByEmployeeId(employeeId);
         List<Address> addressList = employee.getAddresses();
@@ -148,13 +154,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 
         employee.setAddresses(addressStream.collect(Collectors.toList()));
         System.out.println("in service" +  employee);
-        return employeeDaoLayer.save(employee);
+return  employeeDaoLayer.save(employee);
 
     }
 
     @Override
     @CachePut(cacheNames = "firstLevel", key = "#employeeId")
-    public Employee deleteAllAddress(int employeeId) throws InterruptedException {
+    public Employee deleteAllAddress(int employeeId) throws InterruptedException, CustomExecption {
         Employee employee = self.searchByEmployeeId(employeeId);
         employee.setAddresses(new ArrayList<>());
         return employeeDaoLayer.save(employee);

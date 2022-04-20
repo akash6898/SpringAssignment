@@ -2,7 +2,7 @@ package com.example.assignment.controller;
 
 import com.example.assignment.dtoLayer.AddressDto;
 import com.example.assignment.dtoLayer.EmployeeDto;
-import com.example.assignment.entities.Address;
+//import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.serviceLayer.EmployeeService;
@@ -57,14 +57,13 @@ public class MainController {
     }
 
     @GetMapping("/employee/{employeeId}")
-    public Employee getEmployeeById(@PathVariable("employeeId") int employeeId) throws InterruptedException {
+    public Employee getEmployeeById(@PathVariable("employeeId") int employeeId) throws InterruptedException, CustomExecption {
 
         return employeeService.searchByEmployeeId(employeeId);
     }
 
     @PutMapping("/employee")
-    public ResponseEntity editEmployee(@RequestBody EmployeeDto employeeDto)
-    {
+    public ResponseEntity editEmployee(@RequestBody EmployeeDto employeeDto) throws CustomExecption {
         employeeService.editEmployee(employeeDto);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -78,13 +77,13 @@ public class MainController {
     }
 
     @PostMapping("/address/{employeeId}")
-    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException {
+    public ResponseEntity addAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException, CustomExecption {
         employeeService.addAddress(employeeId , addressDto);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @PutMapping("/address/{employeeId}")
-    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException {
+    public ResponseEntity editAddress(@PathVariable("employeeId") int employeeId , @RequestBody AddressDto addressDto) throws InterruptedException, CustomExecption {
         employeeService.editAddress(employeeId , addressDto);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -97,7 +96,7 @@ public class MainController {
     }
 
     @DeleteMapping("/deleteAllAddress/{employeeId}")
-    public ResponseEntity deleteAllAddress(@PathVariable("employeeId") int employeeId) throws InterruptedException {
+    public ResponseEntity deleteAllAddress(@PathVariable("employeeId") int employeeId) throws InterruptedException, CustomExecption {
         employeeService.deleteAllAddress(employeeId);
         return new ResponseEntity(HttpStatus.OK);
     }

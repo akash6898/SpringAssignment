@@ -1,6 +1,8 @@
 package com.example.assignment.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.ManyToAny;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
@@ -8,8 +10,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Component
-@Cacheable(cacheNames = "employee")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cacheable(cacheNames = "address")
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Entity
 public class Address {
     @Id
@@ -22,6 +24,11 @@ public class Address {
     String country;
     String pinCode;
     String contactNo;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "employee_id")
+    @JsonBackReference(value = "address")
+    Employee employee;
 
 
 

@@ -6,6 +6,7 @@ import com.example.assignment.dtoLayer.AddressDto;
 import com.example.assignment.dtoLayer.EmployeeDto;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
+import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.serviceLayer.EmployeeService;
 
 import com.example.assignment.serviceLayer.EmployeeServiceImpl;
@@ -103,7 +104,7 @@ public class AssignmentApplicationTests {
     }
 
     @Test
-    public void searchByEmployeeIdTest() throws InterruptedException {
+    public void searchByEmployeeIdTest() throws InterruptedException, CustomExecption {
 
         when(employeeDaoLayer.findById(2)).thenReturn(Optional.of(aman));
         assertEquals(aman, employeeService.searchByEmployeeId(2));
@@ -111,8 +112,9 @@ public class AssignmentApplicationTests {
     }
 
     @Test
-    public void editEmployeeTest(){
+    public void editEmployeeTest() throws CustomExecption {
 
+        when(employeeDaoLayer.findById(akash.getEmployeeId())).thenReturn(Optional.of(akash));
         when(employeeDaoLayer.save(akash)).thenReturn(akash);
 
         System.out.println(dozerBeanMapper.map(akash, EmployeeDto.class));
@@ -122,7 +124,7 @@ public class AssignmentApplicationTests {
 
 
     @Test
-    public void addAddressTest() throws InterruptedException, CloneNotSupportedException {
+    public void addAddressTest() throws InterruptedException, CloneNotSupportedException, CustomExecption {
 
         Employee newAkash =new Employee(akash.getEmployeeId(), akash.getFirstName(),akash.getLastName(), Stream.of(address1).collect(Collectors.toList()));
         List<Address> addressList = newAkash.getAddresses();
@@ -136,7 +138,7 @@ public class AssignmentApplicationTests {
     }
 
     @Test
-    public void editAddressTest() throws InterruptedException, CloneNotSupportedException {
+    public void editAddressTest() throws InterruptedException, CloneNotSupportedException, CustomExecption {
 
         Employee newAkash = new Employee(akash.getEmployeeId(), akash.getFirstName(),akash.getLastName(),Stream.of(address2).collect(Collectors.toList()));
         given(employeeDaoLayer.findById(1)).willReturn(Optional.of(akash));
@@ -163,7 +165,7 @@ public class AssignmentApplicationTests {
     }
 
     @Test
-    public void deleteAllAddressTest() throws InterruptedException, CloneNotSupportedException {
+    public void deleteAllAddressTest() throws InterruptedException, CloneNotSupportedException, CustomExecption {
 
         Employee newAkash2 = new Employee(akash.getEmployeeId(), akash.getFirstName(),akash.getLastName(),Stream.of(address1).collect(Collectors.toList()));
         newAkash2.addAddresses(address3);
