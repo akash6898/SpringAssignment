@@ -8,6 +8,7 @@ import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.serviceLayer.EmployeeService;
 import com.example.assignment.serviceLayer.EmployeeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,13 @@ public class MainController {
     {
 
         return employeeService.getAllEmployeeData();
+    }
+
+    @GetMapping("/sortedEmployeeWithPagination")
+    public Page<Employee> getAllEmployee(@RequestParam("pageNo") int pageNo , @RequestParam("pageSize") int pageSize)
+    {
+
+        return employeeService.sortedEmployeeWithPagination(pageNo,pageSize);
     }
 
 

@@ -12,6 +12,10 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
@@ -42,8 +46,13 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     public List<Employee> getAllEmployeeData() {
-
         return employeeDaoLayer.findAll();
+    }
+
+    @Override
+    public Page<Employee> sortedEmployeeWithPagination(int pageNo,int pageSize) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by("employeeId"));
+        return  employeeDaoLayer.findAll(paging);
     }
 
     @Override

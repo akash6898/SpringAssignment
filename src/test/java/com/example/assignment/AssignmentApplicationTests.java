@@ -13,6 +13,7 @@ import org.dozer.Mapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,6 +22,10 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -69,25 +74,24 @@ public class AssignmentApplicationTests {
     Employee akansha = new Employee(2, "akansha", "Soni", Stream.of(address3).collect(Collectors.toList()));
 
 
-    @Test
-    public void editAddressTest() throws InterruptedException, CloneNotSupportedException {
 
-        Employee newAkash = new Employee(akash.getEmployeeId(), akash.getFirstName(),akash.getLastName(),Stream.of(address2).collect(Collectors.toList()));
-        given(employeeDaoLayer.findById(1)).willReturn(Optional.of(akash));
-        given(employeeDaoLayer.save(newAkash)).willReturn(newAkash);
-        System.out.println("in test" + newAkash);
-        assertEquals(newAkash, employeeService.editAddress(1,dozerBeanMapper.map(address2, AddressDto.class)));
-        verify(employeeDaoLayer).save(newAkash);
-    }
 
     @Test
     public void getAllEmployeeDataTest() {
-
         when(employeeDaoLayer.findAll()).thenReturn(Stream
                 .of(akash).collect(Collectors.toList()));
         assertEquals(Stream
                 .of(akash).collect(Collectors.toList()), employeeService.getAllEmployeeData());
         verify(employeeDaoLayer).findAll();
+    }
+
+    @Test
+    public  void sortedEmployeeWithPagination()
+    {
+        Page<Employee> emp = Mockito.mock(Page.class);
+        when(employeeDaoLayer.findAll(PageRequest.of(0,1, Sort.by("employeeId")))).thenReturn(emp);
+        assertEquals(emp,employeeService.sortedEmployeeWithPagination(0,1));
+        verify(employeeDaoLayer).findAll(PageRequest.of(0,1, Sort.by("employeeId")));
     }
 
     @Test
@@ -111,7 +115,7 @@ public class AssignmentApplicationTests {
 
         when(employeeDaoLayer.save(akash)).thenReturn(akash);
 
-        System.out.println(akash == employeeService.editEmployee(dozerBeanMapper.map(akash, EmployeeDto.class)));
+        System.out.println(dozerBeanMapper.map(akash, EmployeeDto.class));
         assertEquals(akash, employeeService.editEmployee(dozerBeanMapper.map(akash, EmployeeDto.class)));
 //        verify(employeeDaoLayer).save(akash);
     }
@@ -128,6 +132,17 @@ public class AssignmentApplicationTests {
         when(employeeDaoLayer.save(newAkash)).thenReturn(newAkash);
         System.out.println("in test" + newAkash);
         assertEquals(newAkash, employeeService.addAddress(1,dozerBeanMapper.map(address3, AddressDto.class)));
+        verify(employeeDaoLayer).save(newAkash);
+    }
+
+    @Test
+    public void editAddressTest() throws InterruptedException, CloneNotSupportedException {
+
+        Employee newAkash = new Employee(akash.getEmployeeId(), akash.getFirstName(),akash.getLastName(),Stream.of(address2).collect(Collectors.toList()));
+        given(employeeDaoLayer.findById(1)).willReturn(Optional.of(akash));
+        given(employeeDaoLayer.save(newAkash)).willReturn(newAkash);
+        System.out.println("in test" + newAkash);
+        assertEquals(newAkash, employeeService.editAddress(1,dozerBeanMapper.map(address2, AddressDto.class)));
         verify(employeeDaoLayer).save(newAkash);
     }
 

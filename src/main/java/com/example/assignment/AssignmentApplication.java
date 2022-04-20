@@ -72,7 +72,9 @@ public class AssignmentApplication implements CachingConfigurer {
 	@Bean
 	public Mapper mapper()
 	{
-		return  new DozerBeanMapper();
+		Mapper map =   new DozerBeanMapper();
+
+		return  map;
 	}
 
 

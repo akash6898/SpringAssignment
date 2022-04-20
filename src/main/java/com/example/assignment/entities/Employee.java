@@ -24,7 +24,7 @@ public class Employee {
     String lastName;
 
 
-    @Mapping("addressesDtoList")
+
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "employee_id")
     @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
