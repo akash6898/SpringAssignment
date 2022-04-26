@@ -32,34 +32,35 @@ public class AssignmentApplication implements CachingConfigurer {
 		cacheConfiguration.setName("firstLevel");
 
 		cacheConfiguration.setMaxEntriesLocalHeap(1000);
-		cacheConfiguration.setTimeToLiveSeconds(5*60);
+		cacheConfiguration.setTimeToLiveSeconds(15);
+		cacheConfiguration.timeToIdleSeconds(15);
 
 
-
-		CacheConfiguration cacheConfiguration2 = new CacheConfiguration();
-		cacheConfiguration2.setName("employee");
-		cacheConfiguration2.diskPersistent(true);
-		cacheConfiguration2.diskSpoolBufferSizeMB(1000);
-		cacheConfiguration2.setMaxEntriesLocalHeap(1000);
-		cacheConfiguration2.eternal(true);
-		cacheConfiguration2.setTimeToLiveSeconds(1000);
-		cacheConfiguration2.internalSetTimeToLive(1000);
-
-
-		CacheConfiguration cacheConfiguration3 = new CacheConfiguration();
-		cacheConfiguration3.setName("address");
-		cacheConfiguration3.diskPersistent(true);
-		cacheConfiguration3.diskSpoolBufferSizeMB(1000);
-		cacheConfiguration3.setMaxEntriesLocalHeap(1000);
-		cacheConfiguration3.eternal(true);
-		cacheConfiguration3.setTimeToLiveSeconds(1000);
-		cacheConfiguration3.internalSetTimeToLive(1000);
+//
+//		CacheConfiguration cacheConfiguration2 = new CacheConfiguration();
+//		cacheConfiguration2.setName("employee");
+//		cacheConfiguration2.diskPersistent(true);
+//		cacheConfiguration2.diskSpoolBufferSizeMB(1000);
+//		cacheConfiguration2.setMaxEntriesLocalHeap(1000);
+//		cacheConfiguration2.eternal(true);
+////		cacheConfiguration2.setTimeToLiveSeconds(1000);
+////		cacheConfiguration2.internalSetTimeToLive(1000);
+//
+//
+//		CacheConfiguration cacheConfiguration3 = new CacheConfiguration();
+//		cacheConfiguration3.setName("address");
+//		cacheConfiguration3.diskPersistent(true);
+//		cacheConfiguration3.diskSpoolBufferSizeMB(1000);
+//		cacheConfiguration3.setMaxEntriesLocalHeap(1000);
+//		cacheConfiguration3.eternal(true);
+////		cacheConfiguration3.setTimeToLiveSeconds(1000);
+////		cacheConfiguration3.internalSetTimeToLive(1000);
 
 
 		net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
 		config.addCache(cacheConfiguration);
-		config.addCache(cacheConfiguration2);
-		config.addCache(cacheConfiguration3);
+//		config.addCache(cacheConfiguration2);
+//		config.addCache(cacheConfiguration3);
 //		config.addCache(cacheConfiguration3);
 
 		return net.sf.ehcache.CacheManager.create(config);
@@ -67,8 +68,13 @@ public class AssignmentApplication implements CachingConfigurer {
 
 	@Bean
 	public org.springframework.cache.CacheManager cacheManager() {
-		return (org.springframework.cache.CacheManager) new EhCacheCacheManager(ehCacheManager());
+		return (org.springframework.cache.CacheManager) new EhCacheCacheManager();
 	}
+//
+//	@Bean(name = "cacheManagerB")
+//	public org.springframework.cache.CacheManager cacheManagerB() {
+//		return (org.springframework.cache.CacheManager) new EhCacheCacheManager(ehCacheManager());
+//	}
 
 
 	@Bean
@@ -78,6 +84,8 @@ public class AssignmentApplication implements CachingConfigurer {
 
 		return  map;
 	}
+
+
 
 
 

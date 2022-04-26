@@ -10,7 +10,9 @@ import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.execption.ErrorMessage;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -32,6 +34,10 @@ import java.util.stream.Stream;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
+
+    @Autowired
+    CacheManager cacheManager;
+
     @Autowired
     EmployeeServiceImpl self;
 
@@ -71,7 +77,7 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Cacheable(cacheNames = "firstLevel", key = "#employeeId" ,sync = true ,condition = "#employeeId>10")
     public Employee searchByEmployeeId(int employeeId) throws CustomExecption {
         Optional<Employee> employee = Optional.of(employeeDaoLayer.findById(employeeId).get());
-
+        cacheManager.getCacheNames().stream().forEach(System.out::println);
         if(employee.isPresent())
         {
             return employee.get();

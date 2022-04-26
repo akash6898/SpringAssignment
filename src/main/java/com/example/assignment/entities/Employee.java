@@ -15,7 +15,7 @@ import java.util.Objects;
 
 @Component
 @Cacheable(cacheNames = "employee")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,region = "employee")
 @Entity
 public class Employee {
     @Id
@@ -27,10 +27,10 @@ public class Employee {
 
 
 
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
-    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
-    @JsonManagedReference(value = "address")
+    @org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,region = "address")
+//    @JsonManagedReference(value = "address")
     List<Address> addresses;
 
     public  Employee(){
