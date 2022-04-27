@@ -11,7 +11,7 @@ import java.util.Objects;
 
 @Component
 @Cacheable
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY,region = "com.example.assignment.entities.Address")
 @Entity
 public class Address {
     @Id

@@ -1,19 +1,13 @@
 package com.example.assignment.serviceLayer;
 
-import com.example.assignment.daoLayer.AddressDaoLayer;
 import com.example.assignment.daoLayer.EmployeeDaoLayer;
 import com.example.assignment.dtoLayer.AddressDto;
 import com.example.assignment.dtoLayer.EmployeeDto;
 import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import com.example.assignment.execption.CustomExecption;
-import com.example.assignment.execption.ErrorMessage;
-import net.sf.ehcache.Ehcache;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -29,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

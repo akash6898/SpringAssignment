@@ -1,23 +1,34 @@
 package com.example.assignment;
 
-import net.sf.ehcache.config.CacheConfiguration;
+import com.google.common.cache.CacheBuilder;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCache;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 @SpringBootApplication
 @EnableCaching
 @EnableScheduling
 public class AssignmentApplication implements CachingConfigurer {
+//	static int a =0;
 
 	public static void main(String[] args) {
 		SpringApplication.run(AssignmentApplication.class, args);
@@ -28,55 +39,72 @@ public class AssignmentApplication implements CachingConfigurer {
 
 
 
-//	@Bean
-//	public net.sf.ehcache.CacheManager ehCacheManager() {
-//		CacheConfiguration cacheConfiguration = new CacheConfiguration();
-//		cacheConfiguration.setName("firstLevel");
-//
-//		cacheConfiguration.setMaxEntriesLocalHeap(1000);
-//		cacheConfiguration.setTimeToLiveSeconds(15);
-//		cacheConfiguration.timeToIdleSeconds(15);
-//
-//
-////
-////		CacheConfiguration cacheConfiguration2 = new CacheConfiguration();
-////		cacheConfiguration2.setName("employee");
-////		cacheConfiguration2.diskPersistent(true);
-////		cacheConfiguration2.diskSpoolBufferSizeMB(1000);
-////		cacheConfiguration2.setMaxEntriesLocalHeap(1000);
-////		cacheConfiguration2.eternal(true);
-//////		cacheConfiguration2.setTimeToLiveSeconds(1000);
-//////		cacheConfiguration2.internalSetTimeToLive(1000);
-////
-////
-////		CacheConfiguration cacheConfiguration3 = new CacheConfiguration();
-////		cacheConfiguration3.setName("address");
-////		cacheConfiguration3.diskPersistent(true);
-////		cacheConfiguration3.diskSpoolBufferSizeMB(1000);
-////		cacheConfiguration3.setMaxEntriesLocalHeap(1000);
-////		cacheConfiguration3.eternal(true);
-//////		cacheConfiguration3.setTimeToLiveSeconds(1000);
-//////		cacheConfiguration3.internalSetTimeToLive(1000);
-//
-//
-//		net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-//		config.addCache(cacheConfiguration);
-////		config.addCache(cacheConfiguration2);
-////		config.addCache(cacheConfiguration3);
-////		config.addCache(cacheConfiguration3);
-//
-//		return net.sf.ehcache.CacheManager.create(config);
-//	}
+	@Bean(name = "cacheManager")
+	@Primary
+	public org.springframework.cache.CacheManager cacheManager() {
+
+		CacheManager cacheManager = new SimpleCacheManager() {
+
+			@Override
+			public Cache getCache(String name) {
+				System.out.println(name);
+				try {
+//					System.out.println("in try");
+//					a++;
+//					if(a >= 3 )
+//					{
+//						throw new NoSuchElementException();
+//					}
+//					System.out.println(a);
+
+					if (getEhcache().getCache(name) == null) {
+						return getGuavaCache().getCache(name);
+					}
+					return getEhcache().getCache(name);
+				}
+				catch (Exception e )
+				{
+//					System.out.println("in catch" + e.getMessage());
+//					System.out.println(getGuavaCache().getCache(name));
+					return getGuavaCache().getCache(name);
+				}
+
+			}
+
+			@Override
+			public Collection<String> getCacheNames() {
+				return List.of("firstLevel","com.example.assignment.entities.Employee","com.example.assignment.entities.Address","com.example.assignment.entities.Employee.addresses");
+			}
+		};
+
+	return cacheManager;
+
+	}
+
+
 
 	@Bean
-	public org.springframework.cache.CacheManager cacheManager() {
-		return (org.springframework.cache.CacheManager) new EhCacheCacheManager();
+	public org.springframework.cache.CacheManager getEhcache() {
+		CacheManager cacheManager = (org.springframework.cache.CacheManager) new EhCacheCacheManager();
+		return cacheManager;
+
 	}
-//
-//	@Bean(name = "cacheManagerB")
-//	public org.springframework.cache.CacheManager cacheManagerB() {
-//		return (org.springframework.cache.CacheManager) new EhCacheCacheManager(ehCacheManager());
-//	}
+
+	@Bean
+	public org.springframework.cache.CacheManager getGuavaCache() {
+		ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager() {
+
+			@Override
+			protected Cache createConcurrentMapCache(final String name) {
+				return new ConcurrentMapCache(name,
+						CacheBuilder.newBuilder().expireAfterWrite(30, TimeUnit.MINUTES).maximumSize(100).build().asMap(), false);
+			}
+		};
+
+		cacheManager.setCacheNames(List.of("firstLevel","com.example.assignment.entities.Employee","com.example.assignment.entities.Address","com.example.assignment.entities.Employee.addresses"));
+
+		return cacheManager;
+	}
 
 
 	@Bean
@@ -105,12 +133,5 @@ public class AssignmentApplication implements CachingConfigurer {
 
 		});
 	}
-
-
-
-
-
-
-
 
 }
