@@ -10,8 +10,8 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Component
-@Cacheable(cacheNames = "address")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE,region = "address")
+@Cacheable
+@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
 public class Address {
     @Id
@@ -24,11 +24,6 @@ public class Address {
     String country;
     String pinCode;
     String contactNo;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "employee_id")
-//    @JsonBackReference(value = "address")
-//    Employee employee;
 
 
 

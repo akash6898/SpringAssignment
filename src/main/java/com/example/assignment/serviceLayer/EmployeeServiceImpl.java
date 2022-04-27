@@ -8,6 +8,7 @@ import com.example.assignment.entities.Address;
 import com.example.assignment.entities.Employee;
 import com.example.assignment.execption.CustomExecption;
 import com.example.assignment.execption.ErrorMessage;
+import net.sf.ehcache.Ehcache;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLOutput;
@@ -35,8 +37,7 @@ import java.util.stream.Stream;
 @Service
 public class EmployeeServiceImpl implements EmployeeService{
 
-    @Autowired
-    CacheManager cacheManager;
+
 
     @Autowired
     EmployeeServiceImpl self;
@@ -76,8 +77,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     @Override
     @Cacheable(cacheNames = "firstLevel", key = "#employeeId" ,sync = true ,condition = "#employeeId>10")
     public Employee searchByEmployeeId(int employeeId) throws CustomExecption {
+        System.out.println("no first level");
         Optional<Employee> employee = Optional.of(employeeDaoLayer.findById(employeeId).get());
-        cacheManager.getCacheNames().stream().forEach(System.out::println);
         if(employee.isPresent())
         {
             return employee.get();
@@ -193,6 +194,7 @@ return  employeeDaoLayer.save(employee);
     public List<Employee> searchByCountry(String country) {
         return employeeDaoLayer.findByaddresses_Country(country);
     }
+
 
 
 }

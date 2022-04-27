@@ -15,8 +15,8 @@ import java.util.Optional;
 public interface EmployeeDaoLayer extends JpaRepository<Employee, Integer> {
 
 
-//    @Cacheable("com.example.assignment.entities.Employee")
-    Optional<Employee> findById(int employeeId);
+    @Cacheable("com.example.assignment.entities.Employee")
+
 
     List<Employee> findByaddresses_PinCode(String pinCode);
     List<Employee> findByaddresses_CityName(String city);

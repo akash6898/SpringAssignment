@@ -8,29 +8,31 @@
     <cache name="firstLevel"
            maxElementsInMemory="100"
            eternal="false"
-           timeToLiveSeconds="15"
-           timeToIdleSeconds="15"
+           timeToLiveSeconds="1000"
+           timeToIdleSeconds="1000"
            transactionalMode="off">
     </cache>
 
-    <cache name="employee"
+    <cache name="com.example.assignment.entities.Employee"
            maxElementsInMemory="100"
-           eternal="false"
-           overflowToDisk="true"
-           timeToLiveSeconds="300"
-           timeToIdleSeconds="300"
-           memoryStoreEvictionPolicy="LFU"
+
+
            transactionalMode="off">
+        <pinning store="localMemory" />
     </cache>
 
-    <cache name="address"
+    <cache name="com.example.assignment.entities.Address"
            maxElementsInMemory="100"
-           eternal="false"
-           overflowToDisk="true"
-           timeToLiveSeconds="300"
-           timeToIdleSeconds="300"
-           memoryStoreEvictionPolicy="LFU"
+
            transactionalMode="off">
+        <pinning store="localMemory" />
+    </cache>
+
+    <cache name="com.example.assignment.entities.Employee.addresses"
+           maxElementsInMemory="100"
+
+           transactionalMode="off">
+        <pinning store="localMemory" />
     </cache>
 
 
